@@ -94,6 +94,16 @@ void Chip8::cycle() {
   decode_and_exec(opcode);
 }
 
+void Chip8::updateTimers() {
+  if (delayTimer > 0) {
+    delayTimer--;
+  }
+
+  if (soundTimer > 0) {
+    soundTimer--;
+  }
+}
+
 /* Testing function for display */
 void Chip8::setPixel(uint32_t x, uint32_t y) {
   if (x >= 64 || y >= 32) {
@@ -243,7 +253,7 @@ void Chip8::decode_and_exec(uint16_t opcode) {
     
     case 0x8000: // 0x8XY# instructions
       switch (opcode & 0x000F) { 
-        case 0x0000: // 8XY1
+        case 0x0000: // 8XY0
           registers[x] = registers[y];
           break;
 
@@ -296,14 +306,13 @@ void Chip8::decode_and_exec(uint16_t opcode) {
       }
       break;
 
-    case 0x9000:
-      // 9XY0: skip if VX != VY
+    case 0x9000: // 9XY0
       if (registers[x] != registers[y]) {
         pc += 2;
       }
       break;
 
-    case 0xA000:
+    case 0xA000: // A000
       index = nnn;
       break;
 
@@ -317,8 +326,7 @@ void Chip8::decode_and_exec(uint16_t opcode) {
       break;
     }
 
-    case 0xD000: {
-      // logic for drawing pixels 
+    case 0xD000: { // DXYN
       uint8_t regX = registers[x] & 63;
       uint8_t regY = registers[y] & 31;
 

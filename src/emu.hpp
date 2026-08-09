@@ -19,6 +19,7 @@ class Chip8
     std::streamsize LoadROM(char const* filename);
     void reset();
     void cycle();
+    void updateTimers();
     void setPixel(uint32_t x, uint32_t y);
     void loadInstruction(uint16_t ins);
     uint32_t* getVideo();
