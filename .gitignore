@@ -3,3 +3,8 @@ src/chip8
 *.o
 .DS_Store
 .vscode/
+
+frontend/node_modules/
+frontend/dist/
+frontend/public/chip8.js
+frontend/public/chip8.wasm

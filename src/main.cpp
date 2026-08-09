@@ -3,8 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-#define CYCLES_PER_FRAME 10
-
 int main() {
 
   bool running = true;
