@@ -19,19 +19,18 @@ int main() {
     return 1;
   }
 
-  while (running) {
-    for (int i = 0; i < CYCLES_PER_FRAME; i++) {
-      // std::cout
-      //   <<std::hex
-      //   <<std::setw(2)
-      //   <<std::setfill('0')
-      //   <<static_cast<int>(chip8.getMemory()[i])
-      //   <<'\n';
-      chip8.cycle();
+  // for (int i = 0; i < CYCLES_PER_FRAME; i++) {
+  //   // std::cout
+  //   //   <<std::hex
+  //   //   <<std::setw(2)
+  //   //   <<std::setfill('0')
+  //   //   <<static_cast<int>(chip8.getMemory()[i])
+  //   //   <<'\n';
+  //   chip8.cycle();
 
-      chip8.updateTimers();
-    }
-  }
+  //   // render
+  // }
+  // chip8.updateTimers();
 
   //chip8.printFramebuffer();
 
