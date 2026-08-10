@@ -10,6 +10,7 @@ const SCALE = 10
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [status, setStatus] = useState("Loading WASM")
+  const [running, setRunning] = useState(true)
 
   const keyMap: Record<string, number> = {
     '1': 0x1,
@@ -83,7 +84,9 @@ function App() {
 
       const context = ctx
       function loop() {
-        chip8._runFrame()
+        if (running) {
+          chip8._runFrame()
+        }
 
         const videoPtr = chip8._getVideoBuffer()
         const video = chip8.HEAPU32.subarray(
@@ -112,7 +115,42 @@ function App() {
       loop()
     }
 
-    async function loadROM(chip8: Chip8Module, url: string) {
+    // async function loadROM(chip8: Chip8Module, url: string) {
+    //   const response = await fetch(url)
+    //   const rom = new Uint8Array(await response.arrayBuffer())
+
+    //   const ptr = chip8._malloc(rom.length)
+
+    //   try {
+    //     chip8.HEAPU8.set(rom, ptr)
+
+    //     const ok = chip8._loadROM(ptr, rom.length)
+
+    //     if (!ok) {
+    //       throw new Error('ROM failed to load')
+    //     }
+    //   } finally {
+    //     chip8._free(ptr)
+    //   }
+    // }
+
+    start()
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(animationId)
+
+      if (handleKeyDown) {
+        window.removeEventListener('keydown', handleKeyDown)
+      }
+
+      if (handleKeyUp) {
+        window.removeEventListener('keyup', handleKeyUp)
+      }
+    }
+  }, [])
+
+  async function loadROM(chip8: Chip8Module, url: string) {
       const response = await fetch(url)
       const rom = new Uint8Array(await response.arrayBuffer())
 
@@ -129,20 +167,23 @@ function App() {
       } finally {
         chip8._free(ptr)
       }
-    }
+  }
 
-    start()
-
-    return () => {
-      cancelled = true
-      cancelAnimationFrame(animationId)
-    }
-  }, [])
+  async function resetROM() {
+    const chip8 = await loadChip8Module()
+    await loadROM(chip8, '/roms/test_opcode.ch8')
+  }
 
   return (
     <main>
       <h1>CHIP-8</h1>
       <p>{status}</p>
+      <button type="button" onClick={() => setRunning((value) => !value)}>
+        {running ? 'Pause' : 'Run'}
+      </button>
+      <button type="button" onClick={resetROM}>
+        Reset
+      </button>
 
       <canvas
         ref={canvasRef}
