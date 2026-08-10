@@ -187,6 +187,18 @@ void Chip8::printFramebuffer() {
   }
 }
 
+bool Chip8::loadROMFromBuffer(const uint8_t* data, std::size_t size) {
+  if (size > MAX_ROM_SIZE) {
+    return false;
+  }
+
+  for (std::size_t i = 0; i < size; i++) {
+    memory[START_ADDRESS + i] = data[i];
+  }
+
+  return true;
+}
+
 void Chip8::decode_and_exec(uint16_t opcode) {
   uint8_t x = (opcode >> 8) & 0x0F; // one of the 16 registers V0 through VF, an INDEX
   uint8_t y = (opcode >> 4) & 0x0F; // also one of the 16 registers V0 through VF, an INDEX

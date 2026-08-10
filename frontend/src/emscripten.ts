@@ -1,8 +1,12 @@
 export type Chip8Module = {
+  HEAPU8: Uint8Array
   HEAPU32: Uint32Array
   _reset: () => void
   _runFrame: () => void
   _getVideoBuffer: () => number
+  _malloc: (size: number) => number
+  _free: (ptr: number) => void
+  _loadROM: (ptr: number, size: number) => boolean
   locateFile?: (path: string) => string
   onRuntimeInitialized?: () => void
 }

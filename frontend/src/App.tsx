@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadChip8Module } from './emscripten'
+import type { Chip8Module } from './emscripten';
 import './App.css'
 
 const WIDTH = 64
@@ -16,6 +17,7 @@ function App() {
 
     async function start() {
       const chip8 = await loadChip8Module()
+      await loadROM(chip8, '/roms/test_opcode.ch8')
 
       if (cancelled) return
 
@@ -65,6 +67,25 @@ function App() {
       }
 
       loop()
+    }
+
+    async function loadROM(chip8: Chip8Module, url: string) {
+      const response = await fetch(url)
+      const rom = new Uint8Array(await response.arrayBuffer())
+
+      const ptr = chip8._malloc(rom.length)
+
+      try {
+        chip8.HEAPU8.set(rom, ptr)
+
+        const ok = chip8._loadROM(ptr, rom.length)
+
+        if (!ok) {
+          throw new Error('ROM failed to load')
+        }
+      } finally {
+        chip8._free(ptr)
+      }
     }
 
     start()

@@ -21,4 +21,9 @@ extern "C" {
   uint32_t* getVideoBuffer() {
     return chip8.getVideo();
   }
+
+  bool loadROM(const uint8_t* data, int size) {
+    chip8.reset();
+    return chip8.loadROMFromBuffer(data, size);
+  }
 }
