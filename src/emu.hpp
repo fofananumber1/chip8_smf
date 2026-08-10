@@ -36,6 +36,7 @@ class Chip8
     void setSoundTimer(uint8_t value);
     void setKey(uint8_t key, uint16_t value);
     void printFramebuffer();
+    bool loadROMFromBuffer(const uint8_t* data, std::size_t size);
   private:
     uint8_t registers[16]{}; // 16 8-bit registers
     uint8_t memory[4096]{}; // 4KB memory

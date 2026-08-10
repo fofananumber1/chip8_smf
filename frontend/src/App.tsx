@@ -11,15 +11,58 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [status, setStatus] = useState("Loading WASM")
 
+  const keyMap: Record<string, number> = {
+    '1': 0x1,
+    '2': 0x2,
+    '3': 0x3,
+    '4': 0xC,
+
+    q: 0x4,
+    w: 0x5,
+    e: 0x6,
+    r: 0xD,
+
+    a: 0x7,
+    s: 0x8,
+    d: 0x9,
+    f: 0xE,
+
+    z: 0xA,
+    x: 0x0,
+    c: 0xB,
+    v: 0xF,
+  }
+
   useEffect(() => {
     let animationId = 0
     let cancelled = false
+    let handleKeyDown: ((event: KeyboardEvent) => void) | null = null
+    let handleKeyUp: ((event: KeyboardEvent) => void) | null = null
 
     async function start() {
       const chip8 = await loadChip8Module()
       await loadROM(chip8, '/roms/test_opcode.ch8')
 
       if (cancelled) return
+
+      handleKeyDown = (event: KeyboardEvent) => {
+        const key = keyMap[event.key.toLowerCase()]
+
+        if (key !== undefined) {
+          chip8._setKey(key, 1)
+        }
+      }
+
+      handleKeyUp = (event: KeyboardEvent) => {
+        const key = keyMap[event.key.toLowerCase()]
+
+        if (key !== undefined) {
+          chip8._setKey(key, 0)
+        }
+      }
+
+      window.addEventListener('keydown', handleKeyDown)
+      window.addEventListener('keyup', handleKeyUp)
 
       const canvas = canvasRef.current
 

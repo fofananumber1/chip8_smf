@@ -23,7 +23,19 @@ extern "C" {
   }
 
   bool loadROM(const uint8_t* data, int size) {
+    if (size <= 0) {
+      return false;
+    }
+
     chip8.reset();
     return chip8.loadROMFromBuffer(data, size);
+  }
+
+  void setKey(int key, int pressed) {
+    if (key < 0 || key > 15) {
+      return;
+    }
+
+    chip8.setKey(static_cast<uint8_t>(key), pressed ? 1 : 0);
   }
 }
