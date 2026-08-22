@@ -8,6 +8,8 @@ export type Chip8Module = {
   _free: (ptr: number) => void
   _loadROM: (ptr: number, size: number) => boolean
   _setKey: (key: number, pressed: number) => void
+  _getPC: () => number
+  _getOpcode: () => number
   locateFile?: (path: string) => string
   onRuntimeInitialized?: () => void
 }

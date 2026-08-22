@@ -11,7 +11,11 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [status, setStatus] = useState("Loading WASM")
   const [running, setRunning] = useState(true)
+  const runningRef = useRef(true)
   const [frames, setFrames] = useState(0)
+
+  const [pc, setPc] = useState(0)
+  const [opcode, setOpcode] = useState(0)
 
   const keyMap: Record<string, number> = {
     '1': 0x1,
@@ -33,6 +37,14 @@ function App() {
     x: 0x0,
     c: 0xB,
     v: 0xF,
+  }
+
+  function toggleRunning() {
+    setRunning((value) => {
+      const next = !value
+      runningRef.current = next
+      return next
+    })
   }
 
   async function loadROM(chip8: Chip8Module, url: string) {
@@ -111,8 +123,13 @@ function App() {
 
         let frameCount = 0
         function loop() {
-          if (running) {
+          if (runningRef.current) {
             chip8._runFrame()
+            if (frameCount % 30 === 0) {
+              setFrames(frameCount)
+              setPc(chip8._getPC())
+              setOpcode(chip8._getOpcode())
+            }
             frameCount++
           }
 
@@ -175,13 +192,15 @@ function App() {
   return (
     <main>
       <h1>CHIP-8</h1>
-      <button type="button" onClick={() => setRunning((value) => !value)}>
+      <button type="button" onClick={toggleRunning}>
         {running ? 'Pause' : 'Run'}
       </button>
       <button type="button" onClick={resetROM}>
         Reset
       </button>
-      <p>{status} | Frames: {frames}</p>
+      <p>
+        {status} | Frames: {frames} | PC: 0x{pc.toString(16)} | Opcode: 0x{opcode.toString(16)}
+      </p>
 
       <canvas
         ref={canvasRef}

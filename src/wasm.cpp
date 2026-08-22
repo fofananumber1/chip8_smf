@@ -39,4 +39,12 @@ extern "C" {
     chip8.setKey(static_cast<uint8_t>(key), pressed ? 1 : 0);
     
   }
+
+  uint16_t getPC() {
+    return chip8.getPC();
+  }
+
+  uint16_t getOpcode() {
+    return chip8.getOpcode();
+  }
 }
